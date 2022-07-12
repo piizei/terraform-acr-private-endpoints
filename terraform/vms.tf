@@ -27,7 +27,7 @@ resource "azurerm_linux_virtual_machine" "spoke1test" {
   admin_password                  = random_password.password.result
   disable_password_authentication = false
   network_interface_ids           = [azurerm_network_interface.vm1.id]
-
+  tags                            = local.common_tags
 
   os_disk {
     caching              = "ReadWrite"
@@ -77,7 +77,7 @@ resource "azurerm_linux_virtual_machine" "spoke2test" {
   admin_password                  = random_password.password.result
   disable_password_authentication = false
   network_interface_ids           = [azurerm_network_interface.vm2.id]
-
+  tags                            = local.common_tags
 
   os_disk {
     caching              = "ReadWrite"
