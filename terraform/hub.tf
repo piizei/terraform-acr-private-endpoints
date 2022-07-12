@@ -21,21 +21,6 @@ resource "azurerm_subnet" "hub_default" {
   address_prefixes                               = ["10.12.1.0/24"]
   enforce_private_link_endpoint_network_policies = true
 }
-resource "azurerm_subnet" "hub_gw" {
-  name                                           = "GatewaySubnet"
-  resource_group_name                            = azurerm_resource_group.hub.name
-  virtual_network_name                           = azurerm_virtual_network.hub_vnet.name
-  address_prefixes                               = ["10.12.10.0/24"]
-  enforce_private_link_endpoint_network_policies = true
-}
-
-resource "azurerm_subnet" "hub_fw" {
-  name                                           = "AzureFirewallSubnet"
-  resource_group_name                            = azurerm_resource_group.hub.name
-  virtual_network_name                           = azurerm_virtual_network.hub_vnet.name
-  address_prefixes                               = ["10.12.2.0/24"]
-  enforce_private_link_endpoint_network_policies = true
-}
 
 resource "azurerm_subnet" "hub_bastion" {
   name                                           = "AzureBastionSubnet"
@@ -43,22 +28,6 @@ resource "azurerm_subnet" "hub_bastion" {
   virtual_network_name                           = azurerm_virtual_network.hub_vnet.name
   address_prefixes                               = ["10.12.3.0/24"]
   enforce_private_link_endpoint_network_policies = true
-}
-
-resource "azurerm_public_ip" "public_ip_gw" {
-  name                = "public-ip-gw"
-  resource_group_name = azurerm_resource_group.hub.name
-  location            = azurerm_resource_group.hub.location
-  allocation_method   = "Static"
-  sku                 = "Standard"
-}
-
-resource "azurerm_public_ip" "public_ip_fw" {
-  name                = "public-ip-fw"
-  resource_group_name = azurerm_resource_group.hub.name
-  location            = azurerm_resource_group.hub.location
-  allocation_method   = "Static"
-  sku                 = "Standard"
 }
 
 resource "azurerm_network_security_group" "hub-default" {
@@ -107,45 +76,6 @@ resource "azurerm_network_security_group" "hub-default" {
 resource "azurerm_subnet_network_security_group_association" "nsg-a-hub" {
   subnet_id                 = azurerm_subnet.hub_default.id
   network_security_group_id = azurerm_network_security_group.hub-default.id
-}
-
-resource "azurerm_firewall" "firewall" {
-  name                = "hub-fw"
-  location            = azurerm_resource_group.hub.location
-  resource_group_name = azurerm_resource_group.hub.name
-  sku_name            = "AZFW_VNet"
-  sku_tier            = "Standard"
-  firewall_policy_id  = azurerm_firewall_policy.p1.id
-  ip_configuration {
-    name                 = "configuration"
-    subnet_id            = azurerm_subnet.hub_fw.id
-    public_ip_address_id = azurerm_public_ip.public_ip_fw.id
-  }
-  tags = local.common_tags
-
-}
-
-resource "azurerm_firewall_policy" "p1" {
-  name                = "hub-fw-policy"
-  resource_group_name = azurerm_resource_group.hub.name
-  location            = azurerm_resource_group.hub.location
-}
-
-
-resource "azurerm_virtual_network_gateway" "vnet_gateway" {
-  name                = "hub-vnet-gateway"
-  location            = azurerm_resource_group.hub.location
-  resource_group_name = azurerm_resource_group.hub.name
-
-  type = "Vpn"
-  sku  = "VpnGw2"
-
-  ip_configuration {
-    public_ip_address_id          = azurerm_public_ip.public_ip_gw.id
-    private_ip_address_allocation = "Dynamic"
-    subnet_id                     = azurerm_subnet.hub_gw.id
-  }
-  tags = local.common_tags
 }
 
 resource "azurerm_network_security_group" "hub_bastion" {

@@ -107,6 +107,6 @@ resource "azurerm_dev_test_global_vm_shutdown_schedule" "vm2" {
 }
 
 output "password" {
-  value = random_password.password.result
-   sensitive = true
+  value     = random_password.password.result
+  sensitive = true
 }
