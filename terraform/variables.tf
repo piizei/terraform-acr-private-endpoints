@@ -45,3 +45,9 @@ variable "location_acr_replica" {
   default     = "switzerlandnorth"
 }
 
+variable "acr_name_prefix" {
+  description = "Change this otherwise it conflicts with other users (globally unique)"
+  type        = string
+  default     = "xyzdfd"
+}
+

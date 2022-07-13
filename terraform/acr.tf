@@ -1,5 +1,5 @@
 data "namep_azure_name" "acr" {
-  name = "xyzdfd"
+  name = var.acr_name_prefix
   type = "azurerm_container_registry"
 }
 
