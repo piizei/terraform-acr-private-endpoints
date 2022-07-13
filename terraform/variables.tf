@@ -31,3 +31,17 @@ variable "location_spoke2" {
   type        = string
   default     = "switzerlandnorth"
 }
+
+variable "location_acr" {
+  description = "Azure long naame of the acr location"
+  type        = string
+  default     = "swedencentral"
+}
+
+# Todo could be a list (for multiple replicas)
+variable "location_acr_replica" {
+  description = "Azure long naame of the acr replica location"
+  type        = string
+  default     = "switzerlandnorth"
+}
+

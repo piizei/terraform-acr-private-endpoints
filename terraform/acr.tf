@@ -1,16 +1,16 @@
 data "namep_azure_name" "acr" {
-  name = random_pet.acr.id
+  name = "xyzdfd"
   type = "azurerm_container_registry"
 }
 
 resource "random_pet" "acr" {
   separator = ""
   keepers = {
-    # Generate a new pet name each time we switch worksapce
-    workspace = terraform.workspace
+    # Generate a new pet name for each env
+    env = var.environment
+    
   }
 }
-
 
 resource "azurerm_container_registry" "acr" {
   name                          = data.namep_azure_name.acr.result
@@ -25,4 +25,9 @@ resource "azurerm_container_registry" "acr" {
     zone_redundancy_enabled = true
     tags                    = local.common_tags
   }
+}
+
+output "registry_name" {
+  value     = data.namep_azure_name.acr.result
+  sensitive = false
 }

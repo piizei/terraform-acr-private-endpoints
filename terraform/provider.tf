@@ -16,4 +16,8 @@ provider "azurerm" {
     }
   }
 }
+
+provider "azapi" {
+
+}
 data "azurerm_subscription" "current" {}

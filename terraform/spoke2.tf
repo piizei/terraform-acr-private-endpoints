@@ -49,51 +49,12 @@ resource "azurerm_private_endpoint" "acr-spoke2" {
     subresource_names              = ["registry"]
   }
 
-  private_dns_zone_group {
-    name                 = azurerm_private_dns_zone.acr.name
-    private_dns_zone_ids = [azurerm_private_dns_zone.acr.id]
-  }
 }
 
 resource "azurerm_network_security_group" "spoke2-default" {
   name                = "spoke2-vnet-default-nsg"
   location            = azurerm_resource_group.spoke2.location
   resource_group_name = azurerm_resource_group.spoke2.name
-
-  security_rule {
-    name                       = "AllowVnetInBound"
-    priority                   = 650
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "VirtualNetwork"
-    destination_address_prefix = "VirtualNetwork"
-  }
-  security_rule {
-    name                       = "AllowAzureLoadBalancerInBound"
-    priority                   = 651
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "AzureLoadBalancer"
-    destination_address_prefix = "*"
-  }
-
-  security_rule {
-    name                       = "DenyAllInBound"
-    priority                   = 655
-    direction                  = "Inbound"
-    access                     = "Deny"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
 
   tags = local.common_tags
 }

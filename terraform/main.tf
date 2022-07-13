@@ -1,13 +1,17 @@
 data "namep_azure_name" "hub" {
   name = "hub"
+  location = var.location_hub
   type = "azurerm_resource_group"
 }
+#Change once namep is updated with sweden-central (now the name is wrong :( 
 data "namep_azure_name" "spoke1" {
   name = "spoke1"
+  #location = var.location_spoke1
   type = "azurerm_resource_group"
 }
 data "namep_azure_name" "spoke2" {
   name = "spoke2"
+  location = var.location_spoke2
   type = "azurerm_resource_group"
 }
 resource "azurerm_resource_group" "hub" {

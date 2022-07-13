@@ -41,6 +41,7 @@ resource "azurerm_private_endpoint" "acr" {
   subnet_id           = azurerm_subnet.spoke1.id
   tags                = local.common_tags
 
+
   private_service_connection {
     name                           = "spoke1-acr"
     private_connection_resource_id = azurerm_container_registry.acr.id
@@ -48,75 +49,14 @@ resource "azurerm_private_endpoint" "acr" {
     subresource_names              = ["registry"]
   }
 
-  private_dns_zone_group {
-    name                 = azurerm_private_dns_zone.acr.name
-    private_dns_zone_ids = [azurerm_private_dns_zone.acr.id]
-  }
 }
+
 
 resource "azurerm_network_security_group" "spoke1-default" {
   name                = "spoke1-vnet-default-nsg"
   location            = azurerm_resource_group.spoke1.location
   resource_group_name = azurerm_resource_group.spoke1.name
 
-  security_rule {
-    name                       = "Allow_TCP_443_GatewayManager"
-    priority                   = 110
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = 443
-    source_address_prefix      = "GatewayManager"
-    destination_address_prefix = "*"
-  }
-  
-  security_rule {
-    name                       = "Allow_TCP_4443_GatewayManager"
-    priority                   = 120
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = 4443
-    source_address_prefix      = "GatewayManager"
-    destination_address_prefix = "*"
-  }
-
-  security_rule {
-    name                       = "AllowVnetInBound"
-    priority                   = 650
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "VirtualNetwork"
-    destination_address_prefix = "VirtualNetwork"
-  }
-  security_rule {
-    name                       = "AllowAzureLoadBalancerInBound"
-    priority                   = 651
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "AzureLoadBalancer"
-    destination_address_prefix = "*"
-  }
-
-  security_rule {
-    name                       = "DenyAllInBound"
-    priority                   = 655
-    direction                  = "Inbound"
-    access                     = "Deny"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
 
   tags = local.common_tags
 }

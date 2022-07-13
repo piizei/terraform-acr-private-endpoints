@@ -1,7 +1,7 @@
 resource "random_password" "password" {
   length           = 16
   special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
+  override_special = "!#$%*()-_=+[]{}:?"
 }
 
 
@@ -106,7 +106,44 @@ resource "azurerm_dev_test_global_vm_shutdown_schedule" "vm2" {
 
 }
 
+resource "azurerm_virtual_machine_extension" "vm1" {
+  name                 = "hostname"
+  virtual_machine_id   = azurerm_linux_virtual_machine.spoke1test.id
+  publisher            = "Microsoft.Azure.Extensions"
+  type                 = "CustomScript"
+  type_handler_version = "2.0"
+
+  settings = <<SETTINGS
+    {
+        "commandToExecute": "curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash && sudo apt-get install -y docker.io"
+    }
+SETTINGS
+
+  tags = local.common_tags
+}
+
+resource "azurerm_virtual_machine_extension" "vm2" {
+  name                 = "hostname"
+  virtual_machine_id   = azurerm_linux_virtual_machine.spoke2test.id
+  publisher            = "Microsoft.Azure.Extensions"
+  type                 = "CustomScript"
+  type_handler_version = "2.0"
+
+  settings = <<SETTINGS
+    {
+        "commandToExecute": "curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash && sudo apt install -y docker.io"
+    }
+SETTINGS
+
+  tags = local.common_tags
+}
+
 output "password" {
   value     = random_password.password.result
   sensitive = true
+}
+
+output "username" {
+  value     = azurerm_linux_virtual_machine.spoke1test.admin_username
+  sensitive = false
 }
