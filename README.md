@@ -18,6 +18,8 @@ It creates 2 VMs for testing, one for each spoke. This means it will cost someth
 
 ## How to test that it works.
 
+First apply the terraform. Note that you should change the variable acr_name_prefix or otherwise you will get a collision with somebody else (ACR names are global fqdn:s)
+
 First upload a docker-image to the registry. You can use the Dockerfile on this project (docker-hello)
 
 ```az acr build --image sample/hello-world:v1  --registry myregistryname --file Dockerfile .```
