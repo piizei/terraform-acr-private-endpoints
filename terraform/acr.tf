@@ -3,15 +3,6 @@ data "namep_azure_name" "acr" {
   type = "azurerm_container_registry"
 }
 
-resource "random_pet" "acr" {
-  separator = ""
-  keepers = {
-    # Generate a new pet name for each env
-    env = var.environment
-    
-  }
-}
-
 resource "azurerm_container_registry" "acr" {
   name                          = data.namep_azure_name.acr.result
   resource_group_name           = azurerm_resource_group.spoke1.name
